@@ -17,6 +17,7 @@ setuptools.setup(
     install_requires=[
         "python-dotenv",
         "requests",
+        "py-builder-signing-sdk",
     ],
     project_urls={
         "Bug Tracker": "https://github.com/Polymarket/py-builder-relayer-client/issues",
