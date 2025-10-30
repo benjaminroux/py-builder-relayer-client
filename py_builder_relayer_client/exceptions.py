@@ -1,14 +1,15 @@
 from requests import Response
 
 
-class RelayerException(Exception):
+class RelayerClientException(Exception):
     def __init__(self, msg):
         self.msg = msg
 
 
-class RelayerApiException(RelayerException):
+class RelayerApiException(RelayerClientException):
     def __init__(self, resp: Response = None, error_msg=None):
-        assert resp is not None or error_msg is not None
+        if resp is None and error_msg is None:
+            raise ValueError("invalid resp or error msg")
         if resp is not None:
             self.status_code = resp.status_code
             self.error_msg = self._get_message(resp)
@@ -23,9 +24,7 @@ class RelayerApiException(RelayerException):
             return resp.text
 
     def __repr__(self):
-        return "RelayerApiException[status_code={}, error_message={}]".format(
-            self.status_code, self.error_msg
-        )
+        return f"RelayerApiException[status_code={self.status_code}, error_message={self.error_msg}]"
 
     def __str__(self):
         return self.__repr__()

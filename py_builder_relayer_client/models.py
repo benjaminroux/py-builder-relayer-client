@@ -62,13 +62,14 @@ class SignatureParams:
 @dataclass
 class TransactionRequest:
     type: str
-    from_address: str  # TODO: when converting to dict, convert this to plain "from"
+    from_address: str
     to: str
     proxy: str
     data: str
-    nonce: str = None
     signature: str
     signature_params: SignatureParams
+    value: str = None
+    nonce: str = None
     metadata: str = None
 
     def to_dict(self) -> Dict[str, str]:
@@ -76,11 +77,12 @@ class TransactionRequest:
             "type": self.type,
             "from": self.from_address,
             "to": self.to,
-            "proxyAddress": self.proxy,
+            "proxyWallet": self.proxy,
             "data": self.data,
             "signature": self.signature,
         }
-
+        if self.value is not None:
+            d["value"] = self.value
         if self.signature_params is not None:
             d["signatureParams"] = self.signature_params.to_dict()
         if self.nonce is not None:
@@ -114,3 +116,10 @@ class RelayerTransactionState(Enum):
     STATE_INVALID = "STATE_INVALID"
     STATE_CONFIRMED = "STATE_CONFIRMED"
     STATE_FAILED = "STATE_FAILED"
+
+
+@dataclass
+class SplitSig:
+    r: str
+    s: str
+    v: str
